@@ -1,10 +1,12 @@
-package com.marks.finance.moneyinthepocket.core.Interfaces;
+package com.marks.finance.moneyinthepocket.core.interfaces;
+
+import com.marks.finance.moneyinthepocket.core.exceptions.AmountException;
+import com.marks.finance.moneyinthepocket.core.exceptions.CurrencyException;
 
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
 
 /**
  * Created by Alexander on 8/30/2016.
@@ -15,18 +17,18 @@ public interface Storage {
 
     //get balance
     Map<Currency, BigDecimal> getCurrencyAmounts();
-    BigDecimal getAmount(Currency currency);
-    BigDecimal getApproxAmount(Currency currency);
+    BigDecimal getAmount(Currency currency) throws CurrencyException;
+    BigDecimal getApproxAmount(Currency currency) throws CurrencyException;
 
     // change balance
-    void changeAmount (BigDecimal amount, Currency currency);
-    void addAmount(BigDecimal amount, Currency currency);
-    void expenseAmount(BigDecimal amount, Currency currency);
+    void changeAmount (BigDecimal amount, Currency currency)throws CurrencyException;
+    void addAmount(BigDecimal amount, Currency currency)throws CurrencyException;
+    void expenseAmount(BigDecimal amount, Currency currency)throws CurrencyException, AmountException;
 
     //work with currency
-    void addCurrency(Currency currency);
-    void deleteCurrency(Currency currency);
-    Currency getCurrency(String code);
-    List<Currency> getAvailableCurrenies();
+    void addCurrency(Currency currency) throws CurrencyException;
+    void deleteCurrency(Currency currency) throws CurrencyException;
+    Currency getCurrency(String code) throws CurrencyException;
+    List<Currency> getAvailableCurrencies();
 
 }

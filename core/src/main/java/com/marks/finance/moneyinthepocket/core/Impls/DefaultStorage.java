@@ -1,6 +1,8 @@
-package com.marks.finance.moneyinthepocket.core.Impls;
+package com.marks.finance.moneyinthepocket.core.impls;
 
-import com.marks.finance.moneyinthepocket.core.Interfaces.Storage;
+import com.marks.finance.moneyinthepocket.core.exceptions.AmountException;
+import com.marks.finance.moneyinthepocket.core.exceptions.CurrencyException;
+import com.marks.finance.moneyinthepocket.core.interfaces.Storage;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -18,15 +20,36 @@ public class DefaultStorage implements Storage{
     private String name;
 
     private Map<Currency, BigDecimal> currencyAmounts = new HashMap<>();
-    private List<Currency> curencyList = new ArrayList<>();
+    private List<Currency> currencyList = new ArrayList<>();
 
-    @Override
-    public List<Currency> getAvailableCurrenies() {
-        return curencyList;
+
+    public DefaultStorage(){}
+
+    public DefaultStorage(String name) {
+        this.name = name;
     }
 
-    public void setAvailableCurrenies(List<Currency> availableCurrenies) {
-        this.curencyList = availableCurrenies;
+    public DefaultStorage(List<Currency> currencyList, Map<Currency, BigDecimal> currencyAmounts, String name) {
+        this.currencyList = currencyList;
+        this.currencyAmounts = currencyAmounts;
+        this.name = name;
+    }
+
+    public DefaultStorage(Map<Currency, BigDecimal> currencyAmounts) {
+        this.currencyAmounts = currencyAmounts;
+    }
+
+    public DefaultStorage(List<Currency> currencyList) {
+        this.currencyList = currencyList;
+    }
+
+    @Override
+    public List<Currency> getAvailableCurrencies() {
+        return currencyList;
+    }
+
+    public void setAvailableCurrencies(List<Currency> availableCurrencies) {
+        this.currencyList = availableCurrencies;
     }
 
     @Override
@@ -34,9 +57,10 @@ public class DefaultStorage implements Storage{
         return currencyAmounts;
     }
 
-    public void setCurrencyAmounts(Map<Currency, BigDecimal> currencyAmounts) {
+    /*public void setCurrencyAmounts(Map<Currency, BigDecimal> currencyAmounts) {
         this.currencyAmounts = currencyAmounts;
     }
+    */
 
     @Override
     public String getName() {
@@ -48,43 +72,71 @@ public class DefaultStorage implements Storage{
     }
 
     @Override
-    public  BigDecimal getAmount(Currency currency){
+    public  BigDecimal getAmount(Currency currency) throws CurrencyException{
+        checkCurrencyExist(currency);
         return currencyAmounts.get(currency);
     }
 
+    public void checkCurrencyExist(Currency currency) throws CurrencyException {
+        if(!currencyAmounts.containsKey(currency)){
+            throw new CurrencyException("Currency " + currency + " not exist.");
+        }
+    }
     //Update balance by hand
     @Override
-    public void changeAmount(BigDecimal amount, Currency currency){
+    public void changeAmount(BigDecimal amount, Currency currency) throws CurrencyException{
+        checkCurrencyExist(currency);
         currencyAmounts.put(currency, amount);
     }
 
     // add money to the storage
     @Override
-    public  void  addAmount(BigDecimal amount, Currency currency){
+    public  void  addAmount(BigDecimal amount, Currency currency) throws CurrencyException{
+        checkCurrencyExist(currency);
         BigDecimal oldAmount = currencyAmounts.get(currency);
         currencyAmounts.put(currency, oldAmount.add(amount));
     }
 
     // take money from the storage
     @Override
-    public  void  expenseAmount(BigDecimal amount, Currency currency){
+    public  void  expenseAmount(BigDecimal amount, Currency currency) throws CurrencyException, AmountException {
+        checkCurrencyExist(currency);
+
         BigDecimal oldAmount = currencyAmounts.get(currency);
         BigDecimal newValue = oldAmount.subtract(amount);
+        checkAmount(newValue);
         currencyAmounts.put(currency, newValue);
+    }
+
+    // amount can not be less zero
+    public void checkAmount(BigDecimal amount) throws AmountException{
+        if(amount.compareTo(BigDecimal.ZERO)<0){
+            throw new AmountException("Amount can't be < 0");
+        }
     }
 
     //work with currency
 
     @Override
-    public  void  addCurrency (Currency currency){
-        curencyList.add(currency);
+    public  void  addCurrency (Currency currency) throws CurrencyException{
+        if(currencyAmounts.containsKey(currency)){
+            throw new CurrencyException("Currency already exist");
+        }
+
+        currencyList.add(currency);
         currencyAmounts.put(currency, BigDecimal.ZERO);
     }
 
     @Override
-    public  void deleteCurrency(Currency currency){
+    public  void deleteCurrency(Currency currency) throws CurrencyException{
+        checkCurrencyExist(currency);
+        // don't allows delete currency if there is amount not a zero
+        if(!currencyAmounts.get(currency).equals(BigDecimal.ZERO)){
+            throw new CurrencyException("Can't delete currency with amount");
+        }
+
         currencyAmounts.remove(currency);
-        curencyList.remove(currency);
+        currencyList.remove(currency);
     }
 
     @Override
@@ -93,16 +145,16 @@ public class DefaultStorage implements Storage{
     }
 
     @Override
-    public Currency getCurrency(String code){
+    public Currency getCurrency(String code) throws CurrencyException{
 
-        for (Currency currency: curencyList
+        for (Currency currency: currencyList
              ) {
             if(currency.getCurrencyCode().equals(code)){
                 return currency;
             }
 
         }
-        return null;
+        throw new CurrencyException("Currency (code = " + code + ") not exist in storage");
     }
 
 }
