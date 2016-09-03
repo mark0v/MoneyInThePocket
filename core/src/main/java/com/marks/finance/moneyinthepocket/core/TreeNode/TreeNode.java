@@ -1,11 +1,14 @@
 package com.marks.finance.moneyinthepocket.core.TreeNode;
 
+
 import java.util.List;
 
 /**
  * Created by Alexander on 9/3/2016.
  */
 public interface TreeNode {
+
+    java.lang.String getName();
 
     long getId();
 

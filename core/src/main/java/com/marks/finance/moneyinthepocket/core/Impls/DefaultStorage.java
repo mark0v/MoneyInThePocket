@@ -1,5 +1,6 @@
 package com.marks.finance.moneyinthepocket.core.impls;
 
+import com.marks.finance.moneyinthepocket.core.abstrects.AbstractTreeNode;
 import com.marks.finance.moneyinthepocket.core.exceptions.AmountException;
 import com.marks.finance.moneyinthepocket.core.exceptions.CurrencyException;
 import com.marks.finance.moneyinthepocket.core.interfaces.Storage;
@@ -15,9 +16,8 @@ import java.lang.*;
 /**
  * Created by Alexander on 9/3/2016.
  */
-public class DefaultStorage implements Storage{
+public class DefaultStorage extends AbstractTreeNode implements Storage{
 
-    private String name;
 
     private Map<Currency, BigDecimal> currencyAmounts = new HashMap<>();
     private List<Currency> currencyList = new ArrayList<>();
@@ -25,14 +25,21 @@ public class DefaultStorage implements Storage{
 
     public DefaultStorage(){}
 
+
     public DefaultStorage(String name) {
-        this.name = name;
+        super(name);
     }
 
+    public DefaultStorage(String name, long id) {
+        super(name, id);
+    }
+
+
     public DefaultStorage(List<Currency> currencyList, Map<Currency, BigDecimal> currencyAmounts, String name) {
+        super(name);
         this.currencyList = currencyList;
         this.currencyAmounts = currencyAmounts;
-        this.name = name;
+
     }
 
     public DefaultStorage(Map<Currency, BigDecimal> currencyAmounts) {
@@ -61,15 +68,6 @@ public class DefaultStorage implements Storage{
         this.currencyAmounts = currencyAmounts;
     }
     */
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public  BigDecimal getAmount(Currency currency) throws CurrencyException{
