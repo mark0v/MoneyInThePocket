@@ -1,6 +1,6 @@
 package com.marks.finance.moneyinthepocket.core.abstrects;
 
-import com.marks.finance.moneyinthepocket.core.TreeNode.TreeNode;
+import com.marks.finance.moneyinthepocket.core.interfaces.TreeNode;
 
 import java.lang.*;
 import java.util.ArrayList;

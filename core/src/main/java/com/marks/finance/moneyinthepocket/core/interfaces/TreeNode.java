@@ -1,4 +1,4 @@
-package com.marks.finance.moneyinthepocket.core.TreeNode;
+package com.marks.finance.moneyinthepocket.core.interfaces;
 
 
 import java.util.List;
