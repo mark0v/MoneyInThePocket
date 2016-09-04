@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Alexander on 9/4/2016.
  */
-public interface StorageDAO extends CommonDAO {
+public interface StorageDAO extends CommonDAO <Storage> {
 
 
     boolean addCurrency(Storage storage, Currency currency);
