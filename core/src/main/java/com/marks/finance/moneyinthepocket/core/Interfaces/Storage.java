@@ -11,9 +11,7 @@ import java.util.Map;
 /**
  * Created by Alexander on 8/30/2016.
  */
-public interface Storage {
-
-    String getName();
+public interface Storage extends TreeNode {
 
     //get balance
     Map<Currency, BigDecimal> getCurrencyAmounts();

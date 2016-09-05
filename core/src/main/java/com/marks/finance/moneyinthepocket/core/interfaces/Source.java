@@ -6,11 +6,7 @@ import java.lang.String;
 /**
  * Created by Alexander on 9/3/2016.
  */
-public interface Source {
-
-    String getName();
-
-    long getId();
+public interface Source extends TreeNode {
 
     OperationType getOperationType();
 
