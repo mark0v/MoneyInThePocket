@@ -11,12 +11,12 @@ import java.util.List;
 /**
  * Created by Alexander on 9/11/2016.
  */
-public class StorageSynchronizer implements StorageDAO{
+public class StorageSync implements StorageDAO{
 
     private StorageDAO storageDAO;
     private List<Storage> storageList;
 
-    public StorageSynchronizer(StorageDAO storageDAO) {
+    public StorageSync(StorageDAO storageDAO) {
         this.storageDAO = storageDAO;
         init();
     }

@@ -1,4 +1,4 @@
-package com.marks.finance.moneyinthepocket.core;
+package com.marks.finance.moneyinthepocket.core.enums;
 
 /**
  * Created by Alexander on 9/11/2016.

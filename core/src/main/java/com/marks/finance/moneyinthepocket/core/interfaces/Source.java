@@ -8,7 +8,7 @@ import java.lang.String;
  */
 public interface Source extends TreeNode {
 
-    OperationType getOperationType();
+    com.marks.finance.moneyinthepocket.core.enums.OperationType getOperationType();
 
 
 }
