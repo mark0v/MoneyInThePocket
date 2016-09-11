@@ -17,11 +17,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 public class SourceDAOImpl implements SourceDAO {
@@ -29,7 +30,7 @@ public class SourceDAOImpl implements SourceDAO {
     private static final String SOURCE_TABLE = "source";
 
     private List<Source> sourceList = new ArrayList<>();
-    private Map<OperationType, List<Source>> sourceMap = new HashMap<>();
+    private Map<OperationType, List<Source>> sourceMap = new EnumMap<>(OperationType.class);
 
     private TreeConstructor<Source> treeConstructor = new TreeConstructor();
 
@@ -47,13 +48,19 @@ public class SourceDAOImpl implements SourceDAO {
                 source.setName(rs.getString("name"));
 
                 Integer operationTypeId = rs.getInt("operation_type_id");
-                //source.setOperationType(OperationType.getType(operationTypeId));
-                source.setOperationType(OperationType.getType(operationTypeId));
+
+                OperationType operationType = OperationType.getType(operationTypeId);
+                source.setOperationType(operationType);
 
                 Long parentId = rs.getLong("parent_id");
+
+                sourceMap.put(operationType, sourceList);
+
                 treeConstructor.addToTree(parentId, source, sourceList);
 
             }
+
+            fillSourceMap();
 
             return sourceList;
 
@@ -62,6 +69,16 @@ public class SourceDAOImpl implements SourceDAO {
         }
 
         return null;
+    }
+
+
+    private void fillSourceMap() {
+
+        for (OperationType type: OperationType.values()) {
+
+            sourceMap.put(type, sourceList.stream().filter(s -> s.getOperationType() == type).collect(Collectors.toList()));
+        }
+
     }
 
     @Override
@@ -106,5 +123,10 @@ public class SourceDAOImpl implements SourceDAO {
         }
 
         return false;
+    }
+
+    @Override
+    public List<Source> getList(OperationType operationType) {
+        return sourceMap.get(operationType);
     }
 }

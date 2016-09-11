@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.marks.finance.moneyinthepocket.core.dao.interfaces.SourceDAO;
 import com.marks.finance.moneyinthepocket.core.interfaces.Source;
+import com.marks.finance.moneyinthepocket.core.enums.OperationType;
 
 public class SourceSync implements SourceDAO{
 
@@ -43,8 +44,14 @@ public class SourceSync implements SourceDAO{
 
         if (sourceDAO.delete(source)){
             sourceList.remove(source);
+            sourceDAO.getList(source.getOperationType()).remove(source);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Source> getList(OperationType operationType) {
+        return sourceDAO.getList(operationType);
     }
 }
